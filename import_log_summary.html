@@ -1,0 +1,95 @@
+<head>
+    <title>import_log_summary</title>
+    <script type="text/javascript" src="scripts/date-utils.min.js"></script>
+</head>
+
+<body>
+    <h1>とりあえずこんな感じで</h1>
+    <div class="container">
+        <div class="table-responsive">
+            <table id="main" class="table table-striped table-borderd table-hover">
+                <thead>
+                    <tr>
+                        <td>
+                            date
+                        </td>
+                        <td>
+                            info_type
+                        </td>
+                        <td>
+                            category
+                        </td>
+                        <td>
+                            name
+                        </td>
+                        <td>
+                            opttion
+                        </td>
+                        <td>
+                            description
+                        </td>
+                        <td>
+                            chat
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each logs}} {{> log}} {{/each}}
+                </tbody>
+            </table>
+            <div id="chat-area">
+                <div class="comments">
+                    <div>
+                        <h3>やり取り内容</h3>
+                    </div>
+                    <div id="history">
+                        {{#each comments}} {{> comment}} {{/each}}
+                    </div>
+                </div>
+                <div class="comment-input center-block">
+                {{> chat_input}}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<template name="log">
+    <tr>
+        <td>
+            {{date}}
+        </td>
+        <td>
+            {{info_type}}
+        </td>
+        <td>
+            {{category}}
+        </td>
+        <td>
+            {{name}}
+        </td>
+        <td>
+            {{option}}
+        </td>
+        <td>
+            {{description}}
+        </td>
+        <td>
+            <button class="chat-start btn btn-default" log-id={{log_id}} >chat</button>
+        </td>
+    </tr>
+</template>
+
+<template name="chat_input">
+    <div class="input form-group">
+        名前：
+        <input type="text" id="name" value="{{current_name}}" class="form-control" />
+        <br> 発言：
+        <input type="text" id="text" class="form-control" />
+        <button id="submit" class="btn btn-primary">submit</button>
+    </div>
+</template>
+
+<template name="comment">
+    <div class="head text-info"><span class="name">{{name}}のコメント：</span>(<span class="date">{{date}}</span>)</div><div class="value">{{text}}</div>
+</template>
