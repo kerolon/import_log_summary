@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div class="comment-input center-block">
-                {{> chat_input}}
+                    {{> chat_input}}
                 </div>
             </div>
         </div>
@@ -75,7 +75,7 @@
             {{description}}
         </td>
         <td>
-            <button class="chat-start btn btn-default" log-id={{log_id}} >chat</button>
+            <button class="chat-start btn btn-default" log-id={{log_id}}>chat</button>
         </td>
     </tr>
 </template>
@@ -91,5 +91,6 @@
 </template>
 
 <template name="comment">
-    <div class="head text-info"><span class="name">{{name}}のコメント：</span>(<span class="date">{{date}}</span>)</div><div class="value">{{text}}</div>
+    <div class="head text-info"><span class="name">{{name}}のコメント：</span>(<span class="date">{{date}}</span>)</div>
+    <div class="value">{{text}}</div>
 </template>

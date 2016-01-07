@@ -4,7 +4,7 @@ var Comments = new Mongo.Collection("comments");
 if (Meteor.isClient) {
     
     // counter starts at 0
-    $(window).load(function(){
+    $(window).load(function () {
         $('#chat-area')[0].style.display = 'none';
     });
     Template.body.helpers({
@@ -16,12 +16,12 @@ if (Meteor.isClient) {
 
         ],
         comments: function () {
-            if(Session.get("selected_log_id")){
-                var comment = Comments.find({"log_id":Session.get("selected_log_id")}).fetch();
+            if (Session.get("selected_log_id")) {
+                var comment = Comments.find({ "log_id": Session.get("selected_log_id") }).fetch();
                 return comment.map((c) => {
                     return { date: c.date.toFormat('YYYY/MM/DD HH24:MI:SS'), name: c.name, text: c.text }
                 });
-            }      
+            }
         }
     });
 
@@ -35,7 +35,7 @@ if (Meteor.isClient) {
             Tracker.flush();
         }
     }
-    
+
     Template.chat_input.events = {
         'click button#submit': function (evt) {
             var name = $("#name").val();
@@ -56,5 +56,12 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
     Meteor.startup(function () {
         // code to run on server at startup
+        
+    });
+    JsonRoutes.add("get", "/posts/:id", function (req, res, next) {
+        var id = req.params.id;
+        JsonRoutes.sendResult(res,{
+            data:'jhoge'
+        });
     });
 }
