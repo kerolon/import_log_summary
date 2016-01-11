@@ -1,5 +1,6 @@
 var Logs = new Mongo.Collection("logs");
 var Comments = new Mongo.Collection("comments");
+var Counters = new Mongo.Collection("counters");
 
 if (Meteor.isClient) {
     
@@ -8,13 +9,30 @@ if (Meteor.isClient) {
         $('#chat-area')[0].style.display = 'none';
     });
     Template.body.helpers({
-        //alert('hoge');
-        logs: [
-            { log_id: 0, date: new Date().toFormat('YYYY/MM/DD HH24:MI:SS'), info_type: 'complete1', category: 'import', name: 'someone', option: 'somewhere', description: 'somthing happened' },
-            { log_id: 1, date: new Date().toFormat('YYYY/MM/DD HH24:MI:SS'), info_type: 'complete2', category: 'import', name: 'someone', option: 'somewhere', description: 'somthing happened' },
-            { log_id: 2, date: new Date().toFormat('YYYY/MM/DD HH24:MI:SS'), info_type: 'complete3', category: 'import', name: 'someone', option: 'somewhere', description: 'somthing happened' },
+        logs: function () {
+            var log = Logs.find({}, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
+                    return arr.indexOf(arr.find((y, j, arr2) => {
+                        return y.name === x.name && y.sub_name === x.sub_name;
+                    })) == i;
+                });
+            if (Session.get("selected_infoType_filter")) {
+                log = log.filter((x, i, arr) => {
+                    return x.info_type === Session.get("selected_infoType_filter");
+                });
+            }
 
-        ],
+            return log.map((l) => {
+                return {
+                    log_id: l._id,
+                    date: l.date.toFormat('YYYY/MM/DD HH24:MI:SS'),
+                    info_type: l.info_type,
+                    category: l.category,
+                    name: l.name,
+                    sub_name: l.sub_name,
+                    description: l.description
+                };
+            });
+        },
         comments: function () {
             if (Session.get("selected_log_id")) {
                 var comment = Comments.find({ "log_id": Session.get("selected_log_id") }).fetch();
@@ -24,6 +42,12 @@ if (Meteor.isClient) {
             }
         }
     });
+    Template.body.events = {
+        'change select#ddlInfoTypeFilter': function (e) {
+            Session.set("selected_infoType_filter", $(e.currentTarget).val());
+            Tracker.flush();
+        }
+    }
 
     Template.log.events = {
         'click button.chat-start': function (e) {
@@ -55,13 +79,22 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
     Meteor.startup(function () {
-        // code to run on server at startup
-        
+        // code to run on server at startup        
     });
-    JsonRoutes.add("get", "/posts/:id", function (req, res, next) {
-        var id = req.params.id;
-        JsonRoutes.sendResult(res,{
-            data:'jhoge'
+    JsonRoutes.add("post", "/post/log/", function (req, res, next) {
+
+        var post = JSON.parse(req.body.result);
+        Logs.insert({
+            date: new Date(),
+            info_type: post.info_type,
+            category: post.category,
+            name: post.name,
+            sub_name: post.sub_name,
+            description: post.description,
+        });
+        JsonRoutes.sendResult(res, {
+            data: "ok"
         });
     });
+
 }
