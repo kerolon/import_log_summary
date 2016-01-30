@@ -4,15 +4,22 @@
 </head>
 
 <body>
-    <h1>タイトル</h1>
     <div class="container">
-        <div>
+        <h1 class="title">タイトル</h1>
+    </div>
+    <div class="container">
+        <div class="filter">
             <select name="ddlInfoTypeFilter" id="ddlInfoTypeFilter">>>
-                <option value=""></option>
+                <option label="--filter--" value=""></option>
                 <option label="start" value="start"></option>
                 <option label="error" value="error"></option>
                 <option label="complete" value="complete"></option>
             </select>
+        </div>
+        <div class="export pos-right">
+            <button type="button" id="btn-export" class="btn btn-default" aria-label="Center Align" title="download">
+                <span class="glyphicon glyphicon-download-alt" aria-hidden="true" ></span>
+            </button>
         </div>
         <div class="table-responsive">
             <table id="main" class="table table-striped table-borderd table-hover">
@@ -50,7 +57,7 @@
                     <div>
                         <h3>やり取り内容</h3>
                     </div>
-                    <div id="history">
+                    <div class="history">
                         {{#each comments}} {{> comment}} {{/each}}
                     </div>
                 </div>

@@ -19,9 +19,10 @@ ecmascript              # Enable ECMAScript2015+ syntax in app code
 autopublish             # Publish all data to the clients (for prototyping)
 insecure                # Allow all DB writes from clients (for prototyping)
 meteorhacks:npm
-bootstrap
 
 npm-container
-simple:rest
-simple:json-routes
 underscore
+mrt:bootstrap-3
+simple:rest
+meteorhacks:picker
+ostrio:meteor-root

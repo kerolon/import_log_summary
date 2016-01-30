@@ -1,6 +1,7 @@
 /* CSS declarations go here */
 
-#chat-area div.comment-input{
+
+.comment-input{
     border:1px solid black;
     padding: 10px;
 }
@@ -8,14 +9,27 @@
     padding-left: 5px;
 }
 
-#chat-area div.comments{
+.comments{
     margin:10px;
 }
 
-#chat-area div.comments div#history{
+.history{
     height:200px;
     overflow: auto;
 }
-#main button.active{
+button.active{
     coloer :#acccce
+}
+
+.pos-right{
+    float:right;
+}
+
+.title{
+    padding-left: 10px;
+    border-left: solid teal 5px;
+}
+
+.filter{
+    position: absolute;
 }
