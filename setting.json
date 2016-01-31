@@ -1,0 +1,14 @@
+{
+    "public": {
+        "app_title": "",
+        "tab1_title": "",
+        "tab2_title": "",
+        "date_head":"",
+        "infoType_head":"",
+        "category_head":"",
+        "name_head":"",
+        "subName_head":"",
+        "description_head":"",
+        "chat_head":""
+    }
+}

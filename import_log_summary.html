@@ -5,67 +5,78 @@
 
 <body>
     <div class="container">
-        <h1 class="title">タイトル</h1>
+        <h1 id="app_title" class="title">no title</h1>
     </div>
-    <div class="container">
-        <div class="filter">
-            <select name="ddlInfoTypeFilter" id="ddlInfoTypeFilter">>>
-                <option label="--filter--" value=""></option>
-                <option label="start" value="start"></option>
-                <option label="error" value="error"></option>
-                <option label="complete" value="complete"></option>
-            </select>
-        </div>
-        <div class="export pos-right">
-            <button type="button" id="btn-export" class="btn btn-default" aria-label="Center Align" title="download">
-                <span class="glyphicon glyphicon-download-alt" aria-hidden="true" ></span>
-            </button>
-        </div>
-        <div class="table-responsive">
-            <table id="main" class="table table-striped table-borderd table-hover">
-                <thead>
-                    <tr>
-                        <td>
-                            date
-                        </td>
-                        <td>
-                            info_type
-                        </td>
-                        <td>
-                            category
-                        </td>
-                        <td>
-                            name
-                        </td>
-                        <td>
-                            sub_name
-                        </td>
-                        <td>
-                            description
-                        </td>
-                        <td>
-                            chat
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each logs}} {{> log}} {{/each}}
-                </tbody>
-            </table>
-            <div id="chat-area">
-                <div class="comments">
-                    <div>
-                        <h3>やり取り内容</h3>
-                    </div>
-                    <div class="history">
-                        {{#each comments}} {{> comment}} {{/each}}
-                    </div>
+    <!--タブ-->
+    <ul class="nav nav-tabs container">
+        <li class="active"><a href="#tab1" data-toggle="tab" id="tab1_title">tab1</a></li>
+        <li><a href="#tab2" data-toggle="tab" id="tab2_title">tab2</a></li>
+    </ul>
+    <!-- / タブ-->
+    <div class="tab-content">
+        <div class="list tab-pane fade in active" id="tab1">
+            <div class="container">
+                <div class="filter">
+                    <select name="ddlInfoTypeFilter" id="ddlInfoTypeFilter">>>
+                        <option label="--filter--" value=""></option>
+                        <option label="start" value="start"></option>
+                        <option label="error" value="error"></option>
+                        <option label="complete" value="complete"></option>
+                    </select>
                 </div>
-                <div class="comment-input center-block">
-                    {{> chat_input}}
+                <div class="export pos-right">
+                    <button type="button" id="btn-export" class="btn btn-default" aria-label="Center Align" title="download">
+                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table id="main" class="table table-striped table-borderd table-hover">
+                        <thead>
+                            <tr>
+                                <td id="date_head">
+                                    date
+                                </td>
+                                <td id="infoType_head">
+                                    info_type
+                                </td>
+                                <td id="category_head">
+                                    category
+                                </td>
+                                <td id="name_head">
+                                    name
+                                </td>
+                                <td id="subName_head">
+                                    sub_name
+                                </td>
+                                <td id="description_head">
+                                    description
+                                </td>
+                                <td id="chat_head">
+                                    chat
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each logs}} {{> log}} {{/each}}
+                        </tbody>
+                    </table>
+                    <div id="chat-area">
+                        <div class="comments">
+                            <div>
+                                <h3>やり取り内容</h3>
+                            </div>
+                            <div class="history">
+                                {{#each comments}} {{> comment}} {{/each}}
+                            </div>
+                        </div>
+                        <div class="comment-input center-block">
+                            {{> chat_input}}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="report tab-pane fade" id="tab2"></div>
     </div>
 </body>
 

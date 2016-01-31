@@ -1,26 +1,40 @@
 var Logs = new Mongo.Collection("logs");
 var Comments = new Mongo.Collection("comments");
 
-function getServices(services) {
-    Fiber(function () {
-        services = [];
-        request('http://some-server/vshell/index.php?type=services&mode=json', function (error, response, body) {
-            var resJSON = JSON.parse(body);
-            _.each(resJSON, function (data) {
-                var host = data["host_name"];
-                var service = data["service_description"];
-                var hardState = data["last_hard_state"];
-                var currState = data["current_state"];
-                services += { host: host, service: service, hardState: hardState, currState: currState };
-                Services.insert({ host: host, service: service, hardState: hardState, currState: currState });
-            });
-        });
-    }).run();
-}
-
 if (Meteor.isClient) {
     $(window).load(function () {
         $('#chat-area')[0].style.display = 'none';
+        var publicSetting = Meteor.settings.public;
+        if(publicSetting.app_title){
+          $("#app_title").html(publicSetting.app_title);
+        }
+        if(publicSetting.tab1_title){
+            $("#tab1_title").html(publicSetting.tab1_title);
+        }
+        if(publicSetting.tab2_title){
+            $('#tab2_title').html(publicSetting.tab2_title);
+        }
+        if(publicSetting.date_head){
+            $('#date_head').html(publicSetting.date_head);
+        }
+        if(publicSetting.category_head){
+            $('#category_head').html(publicSetting.category_head);
+        }
+        if(publicSetting.infoType_head){
+            $("#infoType_head").html(publicSetting.infoType_head);
+        }
+        if(publicSetting.name_head){
+            $("#name_head").html(publicSetting.name_head);
+        }
+        if(publicSetting.subName_head){
+            $("#subName_head").html(publicSetting.subName_head);
+        }
+        if(publicSetting.description_head){
+            $("#description_head").html(publicSetting.description_head);
+        }
+        if(publicSetting.chat_head){
+            $("#chat_head").html(publicSetting.chat_head);
+        }
     });
     Template.body.helpers({
         logs: function () {
@@ -97,8 +111,7 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
     var queryString = Meteor.npmRequire('querystring');
     var fs = Meteor.npmRequire('fs');
-    Meteor.startup(function () {
-
+    Meteor.startup(function () { 
     });
 
     Picker.route('/post/log/', function (params, req, res, next) {
@@ -129,21 +142,57 @@ if (Meteor.isServer) {
     Picker.route('/get/log/summary/', function (params, req, res, next) {
         var textdata = "write text test!";
 
-        var download = () => {
-            fs.writeFile(Meteor.rootPath + '\\temp\\writetest.txt', textdata, function (err) {
-                if (err) { console.log('writefile happens error :' + err); }
-                fs.readFile(Meteor.rootPath + '\\temp\\writetest.txt', (err, data) => {
-                    if (err) { console.log('readfile happens error :' + err); }
-                    res.writeHead(200,
-                        {
-                            'Content-Type': 'application/octet-stream',
-                            'Content-Disposition': 'attachment; filename=hogehoge.txt'
-                        });
-                    res.write(data);
-                    res.end();
+
+        var download =
+            Meteor.bindEnvironment(() => {
+                var log = Logs.find({}, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
+                    return arr.indexOf(arr.find((y, j, arr2) => {
+                        return y.name === x.name && y.sub_name === x.sub_name;
+                    })) == i;
+                });
+                var loglist = log.map((l) => {
+                    return {
+                        log_id: l._id,
+                        date: l.date.toFormat('YYYY/MM/DD HH24:MI:SS'),
+                        info_type: l.info_type == 'complete' ? '○' : l.info_type,
+                        category: l.category,
+                        name: l.name,
+                        sub_name: l.sub_name,
+                        description: l.description
+                    };
+                });
+                //start
+                textdata += "\n\n★実行中";
+                for (var l of loglist.filter(a => a.info_type == 'start')) {
+                    textdata += "\n" + l.name + "\n=> " + l.description;
+                }
+                //error
+                textdata += "\n\n\n★エラー";
+                for (var l of loglist.filter(a => a.info_type == 'error')) {
+                    textdata += "\n" + l.name + "\n=> " + l.description;
+                }                
+                //全体
+                textdata += "\n\n\n★全体の状況";
+
+                for (var l of loglist) {
+                    textdata += "\n" + l.name + "\t" + l.info_type + "\t" + l.description;
+                }
+
+                fs.writeFile(Meteor.rootPath + '\\temp\\writetest.txt', textdata, function (err) {
+                    if (err) { console.log('writefile happens error :' + err); }
+                    fs.readFile(Meteor.rootPath + '\\temp\\writetest.txt', (err, data) => {
+                        if (err) { console.log('readfile happens error :' + err); }
+                        res.writeHead(200,
+                            {
+                                'Content-Type': 'application/octet-stream',
+                                'Content-Disposition': 'attachment; filename=hogehoge.txt'
+                            });
+                        res.write(data);
+                        res.end();
+                    });
                 });
             });
-        }
+
 
         if (!fs.exists(Meteor.rootPath + '\\temp')) {
             fs.mkdir(Meteor.rootPath + '\\temp', (e) => {
@@ -154,17 +203,4 @@ if (Meteor.isServer) {
             download();
         }
     });
-    // JsonRoutes.add("get", "/get/log/summary/", function (req, res, next) {
-    //     
-    //     JsonRoutes.setResponseHeaders({
-    //         "Content-Type":"text/plain"
-    //     });
-    //     JsonRoutes.sendResult(res, {
-    //         headers:{
-    //             "Content-Type":"text/plain",
-    //             "Content-Encoding":"shift-jis"
-    //         },
-    //         data: 'hoge'
-    //     });
-    // });
 }
