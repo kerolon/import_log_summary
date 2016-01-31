@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "querystring": {
+      "version": "0.2.0"
+    }
+  }
+}
