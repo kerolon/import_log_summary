@@ -112,6 +112,14 @@ if (Meteor.isServer) {
     var queryString = Meteor.npmRequire('querystring');
     var fs = Meteor.npmRequire('fs');
     Meteor.startup(function () { 
+        //use SSL
+        SSLProxy({
+            port:Meteor.settings.private.ssl-port,
+            ssl:{
+                key:Assets.getText(Meteor.settings.private.ssl-key),
+                cert:Assets.getText(Meteor.settings.private.ssl-cert)
+            }
+        });
     });
 
     Picker.route('/post/log/', function (params, req, res, next) {

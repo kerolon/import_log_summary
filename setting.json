@@ -10,5 +10,10 @@
         "subName_head":"",
         "description_head":"",
         "chat_head":""
+    },
+    "private":{
+        "ssl-port":"",
+        "ssl-key":"",
+        "ssl-cert":""
     }
 }
