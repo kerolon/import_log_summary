@@ -26,4 +26,4 @@ meteorhacks:picker
 ostrio:meteor-root
 npm-container
 underscore
-tarang:ssl
+force-ssl

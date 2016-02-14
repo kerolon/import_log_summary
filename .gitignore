@@ -1,2 +1,5 @@
 node_modules
 ssh
+ssl
+settings.json
+mup.json
