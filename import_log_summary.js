@@ -5,34 +5,34 @@ if (Meteor.isClient) {
     $(window).load(function () {
         $('#chat-area')[0].style.display = 'none';
         var publicSetting = Meteor.settings.public;
-        if(publicSetting.app_title){
-          $("#app_title").html(publicSetting.app_title);
+        if (publicSetting.app_title) {
+            $("#app_title").html(publicSetting.app_title);
         }
-        if(publicSetting.tab1_title){
+        if (publicSetting.tab1_title) {
             $("#tab1_title").html(publicSetting.tab1_title);
         }
-        if(publicSetting.tab2_title){
+        if (publicSetting.tab2_title) {
             $('#tab2_title').html(publicSetting.tab2_title);
         }
-        if(publicSetting.date_head){
+        if (publicSetting.date_head) {
             $('#date_head').html(publicSetting.date_head);
         }
-        if(publicSetting.category_head){
+        if (publicSetting.category_head) {
             $('#category_head').html(publicSetting.category_head);
         }
-        if(publicSetting.infoType_head){
+        if (publicSetting.infoType_head) {
             $("#infoType_head").html(publicSetting.infoType_head);
         }
-        if(publicSetting.name_head){
+        if (publicSetting.name_head) {
             $("#name_head").html(publicSetting.name_head);
         }
-        if(publicSetting.subName_head){
+        if (publicSetting.subName_head) {
             $("#subName_head").html(publicSetting.subName_head);
         }
-        if(publicSetting.description_head){
+        if (publicSetting.description_head) {
             $("#description_head").html(publicSetting.description_head);
         }
-        if(publicSetting.chat_head){
+        if (publicSetting.chat_head) {
             $("#chat_head").html(publicSetting.chat_head);
         }
     });
@@ -111,10 +111,27 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
     var queryString = Meteor.npmRequire('querystring');
     var fs = Meteor.npmRequire('fs');
-    Meteor.startup(function () { 
-        
+    Meteor.startup(function () {
     });
+    Picker.route('/get/token/', function (params, req, res, next) {
+        var data = '';
+        req.on('data', (chunk) => {
+            data += chunk;
+        });
 
+        req.on('end', Meteor.bindEnvironment(function (error, body) {
+            if (req.method === 'POST') {
+                var key = queryString.parse(data).key;
+                res.writeHead(200);
+                res.end(CryptoJS.SHA256(key).toString());
+            }
+            else {
+                res.writeHead(405);
+                res.end();
+                return;
+            }
+        }));
+    });
     Picker.route('/post/log/', function (params, req, res, next) {
         var data = '';
         req.on('data', (chunk) => {
@@ -123,7 +140,14 @@ if (Meteor.isServer) {
 
         req.on('end', Meteor.bindEnvironment(function (error, body) {
             if (req.method === 'POST') {
-                var json = JSON.parse(queryString.parse(data).result);
+                var result = queryString.parse(data).result;
+                var token = queryString.parse(data).token;
+                if (token !== CryptoJS.SHA256(Meteor.settings.private.apipass).toString()) {
+                    res.writeHead(403);
+                    res.end();
+                    return;
+                }
+                var json = JSON.parse(result);
                 console.log(json);
                 Logs.insert({
                     date: new Date(),
@@ -133,17 +157,19 @@ if (Meteor.isServer) {
                     sub_name: json.sub_name,
                     description: json.description,
                 });
-                res.end("ok");
+                res.writeHead(202);
+                res.end();
+                return;
             }
             else {
-                res.end('ng');
+                res.writeHead(405);
+                res.end();
+                return;
             }
         }));
     });
     Picker.route('/get/log/summary/', function (params, req, res, next) {
         var textdata = "write text test!";
-
-
         var download =
             Meteor.bindEnvironment(() => {
                 var log = Logs.find({}, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {

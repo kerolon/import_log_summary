@@ -27,3 +27,4 @@ ostrio:meteor-root
 npm-container
 underscore
 force-ssl
+jparker:crypto-sha256
