@@ -1,5 +1,8 @@
 /* CSS declarations go here */
 
+.content{
+    padding: 10px;
+}
 
 .comment-input{
     border:1px solid black;
@@ -18,11 +21,7 @@
     overflow: auto;
 }
 button.active{
-    coloer :#acccce
-}
-
-.pos-right{
-    float:right;
+    color :#acccce
 }
 
 .title{
@@ -32,4 +31,11 @@ button.active{
 
 .filter{
     position: absolute;
+}
+
+.pos-right{
+    float:right;
+}
+.pos-left{
+    float: left;
 }

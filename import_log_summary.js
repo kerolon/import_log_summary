@@ -112,7 +112,22 @@ if (Meteor.isServer) {
     var queryString = Meteor.npmRequire('querystring');
     var fs = Meteor.npmRequire('fs');
     Meteor.startup(function () {
+        Accounts.loginServiceConfiguration.remove({ service: 'google' });
+        Accounts.loginServiceConfiguration.insert({
+            service: 'google',
+            clientId: Meteor.settings.private.google_api_id,
+            secret: Meteor.settings.private.google_api_secret
+        });
     });
+    Accounts.validateNewUser(function (user) {
+        if (Meteor.settings.private.restrict_domain) {
+            if (user.services.google.email.indexOf(Meteor.settings.private.restrict_domain) != 1) {
+                return true;
+            }
+            throw new Meteor.Error(403, "sorry,your account is not allowed");
+        }
+    });
+
     Picker.route('/get/token/', function (params, req, res, next) {
         var data = '';
         req.on('data', (chunk) => {
