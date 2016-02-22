@@ -3,7 +3,10 @@ var Comments = new Mongo.Collection("comments");
 
 if (Meteor.isClient) {
     $(window).load(function () {
-        $('#chat-area')[0].style.display = 'none';
+        if($('#chat-area')){
+          $('#chat-area').css({display : 'none'});    
+        }
+        
         var publicSetting = Meteor.settings.public;
         if (publicSetting.app_title) {
             $("#app_title").html(publicSetting.app_title);
