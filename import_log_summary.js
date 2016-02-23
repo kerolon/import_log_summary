@@ -2,12 +2,9 @@ var Logs = new Mongo.Collection("logs");
 var Comments = new Mongo.Collection("comments");
 
 if (Meteor.isClient) {
-    $(window).load(function () {
-        if($('#chat-area')){
-          $('#chat-area').css({display : 'none'});    
-        }
-        
-        var publicSetting = Meteor.settings.public;
+    
+    var publicSetting = Meteor.settings.public;
+    $(window).load(function () {        
         if (publicSetting.app_title) {
             $("#app_title").html(publicSetting.app_title);
         }
@@ -17,28 +14,15 @@ if (Meteor.isClient) {
         if (publicSetting.tab2_title) {
             $('#tab2_title').html(publicSetting.tab2_title);
         }
-        if (publicSetting.date_head) {
-            $('#date_head').html(publicSetting.date_head);
-        }
-        if (publicSetting.category_head) {
-            $('#category_head').html(publicSetting.category_head);
-        }
-        if (publicSetting.infoType_head) {
-            $("#infoType_head").html(publicSetting.infoType_head);
-        }
-        if (publicSetting.name_head) {
-            $("#name_head").html(publicSetting.name_head);
-        }
-        if (publicSetting.subName_head) {
-            $("#subName_head").html(publicSetting.subName_head);
-        }
-        if (publicSetting.description_head) {
-            $("#description_head").html(publicSetting.description_head);
-        }
-        if (publicSetting.chat_head) {
-            $("#chat_head").html(publicSetting.chat_head);
-        }
     });
+    Template.log_header.date = publicSetting.date_head;
+    Template.log_header.info_type = publicSetting.infoType_head;
+    Template.log_header.category = publicSetting.category_head;
+    Template.log_header.name = publicSetting.name_head;
+    Template.log_header.sub_name = publicSetting.subName_head;
+    Template.log_header.description = publicSetting.description_head;
+    Template.log_header.chat = publicSetting.chat_head;
+
     Template.body.helpers({
         logs: function () {
             var log = Logs.find({}, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
