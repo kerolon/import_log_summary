@@ -1,0 +1,20 @@
+{
+    "public": {
+        "app_title": "",
+        "tab1_title": "",
+        "tab2_title": "",
+        "date_head": "",
+        "infoType_head": "",
+        "category_head": "",
+        "name_head": "",
+        "subName_head": "",
+        "description_head": "",
+        "chat_head": ""
+    },
+    "private": {
+        "apipass": "",
+        "google_api_id":"",
+        "google_api_secret":"",
+        "restrict_domain":""
+    }
+}

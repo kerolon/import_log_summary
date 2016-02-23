@@ -2,19 +2,12 @@ var Logs = new Mongo.Collection("logs");
 var Comments = new Mongo.Collection("comments");
 
 if (Meteor.isClient) {
-    
     var publicSetting = Meteor.settings.public;
-    $(window).load(function () {        
-        if (publicSetting.app_title) {
-            $("#app_title").html(publicSetting.app_title);
-        }
-        if (publicSetting.tab1_title) {
-            $("#tab1_title").html(publicSetting.tab1_title);
-        }
-        if (publicSetting.tab2_title) {
-            $('#tab2_title').html(publicSetting.tab2_title);
-        }
-    });
+    Template.title.title = publicSetting.app_title;
+
+    Template.tab.tab1_name = publicSetting.tab1_title;
+    Template.tab.tab2_name = publicSetting.tab2_title;
+
     Template.log_header.date = publicSetting.date_head;
     Template.log_header.info_type = publicSetting.infoType_head;
     Template.log_header.category = publicSetting.category_head;
@@ -55,6 +48,20 @@ if (Meteor.isClient) {
                     return { date: c.date.toFormat('YYYY/MM/DD HH24:MI:SS'), name: c.name, text: c.text }
                 });
             }
+        },
+        filters:function(){
+            var status = Logs.find().fetch().filter((x, i, arr) => {
+                return arr.indexOf(arr.find((y, j, arr2) => {
+                    return y.info_type === x.info_type;
+                })) == i;
+            });
+            
+            return status.map((l) => {
+                return {
+                    name: l.info_type,
+                    val: l.info_type,                    
+                };
+            });
         }
     });
     Template.body.events = {

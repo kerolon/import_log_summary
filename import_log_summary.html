@@ -6,7 +6,7 @@
 <body>
     <div class="container">
         <div>
-            <h1 id="app_title" class="title">no title</h1>
+            {{>title}}
         </div>
         <div id="login" class="in-logout pos-right">
             {{> loginButtons}}
@@ -18,8 +18,7 @@
         {{#if currentUser.services.google}}
         <!--タブ-->
         <ul class="nav nav-tabs container">
-            <li class="active"><a href="#tab1" data-toggle="tab" id="tab1_title">tab1</a></li>
-            <li><a href="#tab2" data-toggle="tab" id="tab2_title">tab2</a></li>
+            {{>tab}}
         </ul>
         <!-- / タブ-->
         <div class="tab-content">
@@ -28,9 +27,7 @@
                     <div class="filter">
                         <select name="ddlInfoTypeFilter" id="ddlInfoTypeFilter">
                             <option label="--filter--" value=""></option>
-                            <option label="start" value="start"></option>
-                            <option label="error" value="error"></option>
-                            <option label="complete" value="complete"></option>
+                            {{#each filters}}{{>filter}}{{/each}}
                         </select>
                     </div>
                     <div class="export pos-right">
@@ -68,6 +65,13 @@
         {{/if}}
     </div>
 </body>
+<template name="title">
+    <h1 id="app_title" class="title">{{title}}</h1>
+</template>
+<template name="tab">
+    <li class="active"><a href="#tab1" data-toggle="tab" id="tab1_title">{{tab1_name}}</a></li>
+    <li><a href="#tab2" data-toggle="tab" id="tab2_title">{{tab2_name}}</a></li>
+</template>
 <template name="log_header">
     <tr>
         <td id="date_head">
@@ -94,7 +98,9 @@
     </tr>
 </template>
 
-
+<template name="filter">    
+    <option label={{name}} value={{val}}></option>
+</template>
 <template name="log">
     <tr>
         <td>
