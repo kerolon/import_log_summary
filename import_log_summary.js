@@ -1,7 +1,7 @@
 var Logs = new Mongo.Collection("logs");
 var Comments = new Mongo.Collection("comments");
 
-function computeDate(dt, addDays) {
+function getDate(dt, addDays) {
     var baseSec = dt.getTime();
     var addSec = addDays * 86400000;//日数 * 1日のミリ秒数
     var targetSec = baseSec - addSec;
@@ -26,7 +26,7 @@ if (Meteor.isClient) {
     Template.body.helpers({
         logs: function () {
             //1日前のまで取得
-            var tdate = computeDate(new Date(), 1);
+            var tdate = getDate(new Date(), 1);
             var log = Logs.find({ date: { $gte: tdate } }, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
                 return arr.indexOf(arr.find((y, j, arr2) => {
                     return y.name === x.name && y.sub_name === x.sub_name;
@@ -57,22 +57,22 @@ if (Meteor.isClient) {
                     return { date: c.date.toFormat('YYYY/MM/DD HH24:MI:SS'), name: c.name, text: c.text }
                 });
             }
-        },
-        filters: function () {
-            var tdate = computeDate(new Date(), 1);
-            var status = Logs.find({ date: { $gte: tdate } }).fetch().filter((x, i, arr) => {
-                return arr.indexOf(arr.find((y, j, arr2) => {
-                    return y.info_type === x.info_type;
-                })) == i;
-            });
-
-            return status.map((l) => {
-                return {
-                    name: l.info_type,
-                    val: l.info_type,
-                };
-            });
         }
+//         filters: function () {
+//             var tdate = getDate(new Date(), 1);
+//             var status = Logs.find({ date: { $gte: tdate } }).fetch().filter((x, i, arr) => {
+//                 return arr.indexOf(arr.find((y, j, arr2) => {
+//                     return y.info_type === x.info_type;
+//                 })) == i;
+//             });
+// 
+//             return status.map((l) => {
+//                 return {
+//                     name: l.info_type,
+//                     val: l.info_type,
+//                 };
+//             });
+//         }
     });
     Template.body.events = {
         'change select#ddlInfoTypeFilter': function (e) {
