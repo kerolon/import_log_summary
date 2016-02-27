@@ -26,7 +26,7 @@ if (Meteor.isClient) {
     Template.body.helpers({
         logs: function () {
             //1日前のまで取得
-            var tdate = computeDate(new Date(), 1)
+            var tdate = computeDate(new Date(), 1);
             var log = Logs.find({ date: { $gte: tdate } }, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
                 return arr.indexOf(arr.find((y, j, arr2) => {
                     return y.name === x.name && y.sub_name === x.sub_name;
@@ -59,7 +59,8 @@ if (Meteor.isClient) {
             }
         },
         filters: function () {
-            var status = Logs.find().fetch().filter((x, i, arr) => {
+            var tdate = computeDate(new Date(), 1);
+            var status = Logs.find({ date: { $gte: tdate } }).fetch().filter((x, i, arr) => {
                 return arr.indexOf(arr.find((y, j, arr2) => {
                     return y.info_type === x.info_type;
                 })) == i;
