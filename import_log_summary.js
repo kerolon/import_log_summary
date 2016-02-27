@@ -1,6 +1,14 @@
 var Logs = new Mongo.Collection("logs");
 var Comments = new Mongo.Collection("comments");
 
+function computeDate(dt, addDays) {
+    var baseSec = dt.getTime();
+    var addSec = addDays * 86400000;//日数 * 1日のミリ秒数
+    var targetSec = baseSec - addSec;
+    dt.setTime(targetSec);
+    return dt;
+}
+
 if (Meteor.isClient) {
     var publicSetting = Meteor.settings.public;
     Template.title.title = publicSetting.app_title;
@@ -15,10 +23,11 @@ if (Meteor.isClient) {
     Template.log_header.sub_name = publicSetting.subName_head;
     Template.log_header.description = publicSetting.description_head;
     Template.log_header.chat = publicSetting.chat_head;
-
     Template.body.helpers({
         logs: function () {
-            var log = Logs.find({}, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
+            //1日前のまで取得
+            var tdate = computeDate(new Date(), 1)
+            var log = Logs.find({ date: { $gte: tdate } }, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
                 return arr.indexOf(arr.find((y, j, arr2) => {
                     return y.name === x.name && y.sub_name === x.sub_name;
                 })) == i;
@@ -49,17 +58,17 @@ if (Meteor.isClient) {
                 });
             }
         },
-        filters:function(){
+        filters: function () {
             var status = Logs.find().fetch().filter((x, i, arr) => {
                 return arr.indexOf(arr.find((y, j, arr2) => {
                     return y.info_type === x.info_type;
                 })) == i;
             });
-            
+
             return status.map((l) => {
                 return {
                     name: l.info_type,
-                    val: l.info_type,                    
+                    val: l.info_type,
                 };
             });
         }

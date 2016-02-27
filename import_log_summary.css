@@ -3,6 +3,9 @@
 .content{
     padding: 10px;
 }
+div.limit-height{
+    max-height: 100px;
+}
 
 .comment-input{
     border:1px solid black;
@@ -38,4 +41,7 @@ button.active{
 }
 .pos-left{
     float: left;
+}
+.vscroll{
+  overflow-y: auto;  
 }

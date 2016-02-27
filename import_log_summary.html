@@ -5,17 +5,19 @@
 
 <body>
     <div class="container">
+        {{#if currentUser.services.google}}
         <div>
             {{>title}}
         </div>
+        {{/if}}
         <div id="login" class="in-logout pos-right">
             {{> loginButtons}}
         </div>
     </div>
     <div class="content in-logout">
     </div>
-    <div class='content in-login'>
-        {{#if currentUser.services.google}}
+    {{#if currentUser.services.google}}
+    <div class='content in-login'>        
         <!--タブ-->
         <ul class="nav nav-tabs container">
             {{>tab}}
@@ -61,9 +63,9 @@
                 </div>
             </div>
             <div class="report tab-pane fade" id="tab2"></div>
-        </div>
-        {{/if}}
+        </div>        
     </div>
+    {{/if}}
 </body>
 <template name="title">
     <h1 id="app_title" class="title">{{title}}</h1>
@@ -119,7 +121,9 @@
             {{sub_name}}
         </td>
         <td>
+            <div class="limit-height vscroll">
             {{description}}
+            </div>
         </td>
         <td>
             <button class="chat-start btn btn-default" log-id={{log_id}}>chat</button>
