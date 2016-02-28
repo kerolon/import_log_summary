@@ -170,6 +170,7 @@ if (Meteor.isServer) {
                 console.log(json);
                 Logs.insert({
                     date: new Date(),
+                    key:json.key,
                     info_type: json.info_type,
                     category: json.category,
                     name: json.name,
