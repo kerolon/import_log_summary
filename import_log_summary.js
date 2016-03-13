@@ -22,7 +22,7 @@ if (Meteor.isClient) {
     Template.log_header.name = publicSetting.name_head;
     Template.log_header.sub_name = publicSetting.subName_head;
     Template.log_header.description = publicSetting.description_head;
-    Template.log_header.chat = publicSetting.chat_head;
+ Template.log_header.chat = publicSetting.chat_head;
     Template.body.helpers({
         logs: function () {
             //1日前のまで取得
@@ -131,7 +131,7 @@ if (Meteor.isServer) {
             throw new Meteor.Error(403, "sorry,your account is not allowed");
         }
     });
-
+    
     Picker.route('/get/token/', function (params, req, res, next) {
         var data = '';
         req.on('data', (chunk) => {
@@ -189,7 +189,6 @@ if (Meteor.isServer) {
         }));
     });
     Picker.route('/get/log/summary/', function (params, req, res, next) {
-        var textdata = "write text test!";
         var download =
             Meteor.bindEnvironment(() => {
                 var log = Logs.find({}, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
@@ -210,19 +209,19 @@ if (Meteor.isServer) {
                 });
                 //start
                 textdata += "\n\n★実行中";
-                for (var l of loglist.filter(a => a.info_type == 'start')) {
+                for (var l of loglist.filter(a => a.info_type == 'Begin')) {
                     textdata += "\n" + l.name + "\n=> " + l.description;
                 }
                 //error
                 textdata += "\n\n\n★エラー";
-                for (var l of loglist.filter(a => a.info_type == 'error')) {
+                for (var l of loglist.filter(a => a.info_type == 'Abend')) {
                     textdata += "\n" + l.name + "\n=> " + l.description;
                 }                
                 //全体
                 textdata += "\n\n\n★全体の状況";
 
                 for (var l of loglist) {
-                    textdata += "\n" + l.name + "\t" + l.info_type + "\t" + l.description;
+                    textdata += "\n" + l.name + "\t" + l.info_type;
                 }
 
                 fs.writeFile(Meteor.rootPath + '\\temp\\writetest.txt', textdata, function (err) {
@@ -232,7 +231,7 @@ if (Meteor.isServer) {
                         res.writeHead(200,
                             {
                                 'Content-Type': 'application/octet-stream',
-                                'Content-Disposition': 'attachment; filename=hogehoge.txt'
+                                'Content-Disposition': 'attachment; filename=download.txt'
                             });
                         res.write(data);
                         res.end();
