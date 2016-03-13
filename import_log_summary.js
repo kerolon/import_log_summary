@@ -226,12 +226,12 @@ if (Meteor.isServer) {
                 //start
                 textdata += "\n\n★実行中";
                 for (var l of loglist.filter(a => a.info_type == 'Begin')) {
-                    textdata += "\n" + l.name + "\n=> " + l.description;
+                    textdata += "\n" + l.name;
                 }
                 //error
                 textdata += "\n\n\n★エラー";
                 for (var l of loglist.filter(a => a.info_type == 'Abend')) {
-                    textdata += "\n" + l.name + "\n=> " + l.description;
+                    textdata += "\n" + l.name;
                 }
                 //全体
                 textdata += "\n\n\n★全体の状況";
