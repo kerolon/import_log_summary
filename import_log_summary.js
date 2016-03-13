@@ -222,6 +222,7 @@ if (Meteor.isServer) {
                         description: l.description
                     };
                 });
+                var textdata = '';
                 //start
                 textdata += "\n\n★実行中";
                 for (var l of loglist.filter(a => a.info_type == 'Begin')) {
