@@ -49,7 +49,7 @@ if (Meteor.isClient) {
                     category: l.category,
                     name: l.name,
                     sub_name: l.sub_name,
-                    description: (l.description.length > 30? l.description.substring(0,30) + "...":l.description)
+                    description: (l.description.length > 30 ? l.description.substring(0, 30) + "..." : l.description)
                 };
             });
         },
@@ -98,13 +98,12 @@ if (Meteor.isClient) {
             Tracker.flush();
         },
         'click div.descript': function(e) {
-            Modal.show('logDescription', function() {
-                var id = $(e.currentTarget).attr('log-id');
-                var l= Logs.findOne(id);
-                return {description:l.description.replace("/\r\n/g","</br>")}
-            });
+            var id = $(e.currentTarget).attr('log-id');
+            var l = Logs.findOne(id).description;
+            Modal.show('logDescription');
+$("#log-desc")[0].innerHTML = l.replace(/\r\n/g,"</br>");
         },
-        'click td.clickable':function(e){
+        'click td.clickable': function(e) {
             Modal.show('onelogModal', function() {
                 return Logs.find().fetch();
             });
