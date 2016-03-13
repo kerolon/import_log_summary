@@ -30,3 +30,4 @@ force-ssl
 jparker:crypto-sha256
 accounts-ui
 accounts-google
+peppelg:bootstrap-3-modal

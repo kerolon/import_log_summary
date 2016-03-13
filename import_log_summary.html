@@ -1,5 +1,5 @@
 <head>
-    <title>import_log_summary</title>
+    <title>batch_summary</title>
     <script type="text/javascript" src="scripts/date-utils.min.js"></script>
 </head>
 
@@ -17,7 +17,7 @@
     <div class="content in-logout">
     </div>
     {{#if currentUser.services.google}}
-    <div class='content in-login'>        
+    <div class='content in-login'>
         <!--タブ-->
         <ul class="nav nav-tabs container">
             {{>tab}}
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="report tab-pane fade" id="tab2"></div>
-        </div>        
+        </div>
     </div>
     {{/if}}
 </body>
@@ -100,29 +100,29 @@
     </tr>
 </template>
 
-<template name="filter">    
+<template name="filter">
     <option label={{name}} value={{val}}></option>
 </template>
 <template name="log">
-    <tr>
-        <td>
+    <tr class="log">
+        <td class="clickable">
             {{date}}
         </td>
-        <td>
+        <td class="clickable">
             {{info_type}}
         </td>
-        <td>
+        <td class="clickable">
             {{category}}
         </td>
-        <td>
+        <td class="clickable">
             {{name}}
         </td>
-        <td>
+        <td class="clickable">
             {{sub_name}}
         </td>
         <td>
-            <div class="limit-height vscroll">
-            {{description}}
+            <div class="limit-height vscroll descript" log-id={{log_id}}>
+                {{description}}
             </div>
         </td>
         <td>
@@ -144,4 +144,71 @@
 <template name="comment">
     <div class="head text-info"><span class="name">{{name}}のコメント：</span>(<span class="date">{{date}}</span>)</div>
     <div class="value">{{text}}</div>
+</template>
+
+<template name="onelogModal">
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal example</h4>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-striped table-borderd table-hover">
+                        <thead>
+                            {{>onelog_header}}
+                        </thead>
+                        <tbody>
+                            {{#each logs}} {{>onelog}} {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</template>
+<template name="onelog_header">
+    <tr>
+        <td id="date_head">
+            {{date}}
+        </td>
+        <td id="infoType_head">
+            {{info_type}}
+        </td>
+    </tr>
+</template>
+<template name="onelog">
+    <tr>
+        <td>
+            {{date}}
+        </td>
+        <td>
+            {{info_type}}
+        </td>
+    </tr>
+</template>
+<template name="logDescription">
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">description</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="text">{{description}}</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </template>

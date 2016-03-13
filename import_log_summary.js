@@ -8,8 +8,8 @@ function getDate(dt, addDays) {
     dt.setTime(targetSec);
     return dt;
 }
-
 if (Meteor.isClient) {
+
     var publicSetting = Meteor.settings.public;
     Template.title.title = publicSetting.app_title;
 
@@ -17,14 +17,17 @@ if (Meteor.isClient) {
     Template.tab.tab2_name = publicSetting.tab2_title;
 
     Template.log_header.date = publicSetting.date_head;
+    Template.onelog_header.date = publicSetting.date_head;
     Template.log_header.info_type = publicSetting.infoType_head;
+    Template.onelog_header.info_type = publicSetting.infoType_head;
     Template.log_header.category = publicSetting.category_head;
     Template.log_header.name = publicSetting.name_head;
     Template.log_header.sub_name = publicSetting.subName_head;
     Template.log_header.description = publicSetting.description_head;
- Template.log_header.chat = publicSetting.chat_head;
+    Template.onelog_header.description = publicSetting.description_head;
+    Template.log_header.chat = publicSetting.chat_head;
     Template.body.helpers({
-        logs: function () {
+        logs: function() {
             //1日前のまで取得
             var tdate = getDate(new Date(), 1);
             var log = Logs.find({ date: { $gte: tdate } }, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
@@ -46,11 +49,11 @@ if (Meteor.isClient) {
                     category: l.category,
                     name: l.name,
                     sub_name: l.sub_name,
-                    description: l.description
+                    description: (l.description.length > 30? l.description.substring(0,30) + "...":l.description)
                 };
             });
         },
-        comments: function () {
+        comments: function() {
             if (Session.get("selected_log_id")) {
                 var comment = Comments.find({ "log_id": Session.get("selected_log_id") }).fetch();
                 return comment.map((c) => {
@@ -58,7 +61,7 @@ if (Meteor.isClient) {
                 });
             }
         },
-        filters: function () {
+        filters: function() {
             var tdate = getDate(new Date(), 1);
             var status = Logs.find({ date: { $gte: tdate } }).fetch().filter((x, i, arr) => {
                 return arr.indexOf(arr.find((y, j, arr2) => {
@@ -72,31 +75,44 @@ if (Meteor.isClient) {
                     val: l.info_type,
                 };
             });
-        }
+        },
     });
+
     Template.body.events = {
-        'change select#ddlInfoTypeFilter': function (e) {
+        'change select#ddlInfoTypeFilter': function(e) {
             Session.set("selected_infoType_filter", $(e.currentTarget).val());
             Tracker.flush();
         },
-        'click #btn-export': function (e) {
+        'click #btn-export': function(e) {
             window.open('/get/log/summary', 'download');
         }
     }
 
     Template.log.events = {
-        'click button.chat-start': function (e) {
+        'click button.chat-start': function(e) {
             Session.set("selected_log_id", $(e.currentTarget).attr('log-id'));
             $('#chat-area')[0].style.display = '';
             $("button.chat-start").removeClass("btn-warning")
             $("button.chat-start").addClass("btn-default");
             $(e.currentTarget).addClass('btn-warning');
             Tracker.flush();
+        },
+        'click div.descript': function(e) {
+            Modal.show('logDescription', function() {
+                var id = $(e.currentTarget).attr('log-id');
+                var l= Logs.findOne(id);
+                return {description:l.description.replace("/\r\n/g","</br>")}
+            });
+        },
+        'click td.clickable':function(e){
+            Modal.show('onelogModal', function() {
+                return Logs.find().fetch();
+            });
         }
     }
 
     Template.chat_input.events = {
-        'click button#submit': function (evt) {
+        'click button#submit': function(evt) {
             var name = $("#name").val();
             var text = $("#text").val();
 
@@ -115,7 +131,7 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
     var queryString = Meteor.npmRequire('querystring');
     var fs = Meteor.npmRequire('fs');
-    Meteor.startup(function () {
+    Meteor.startup(function() {
         Accounts.loginServiceConfiguration.remove({ service: 'google' });
         Accounts.loginServiceConfiguration.insert({
             service: 'google',
@@ -123,7 +139,7 @@ if (Meteor.isServer) {
             secret: Meteor.settings.private.google_api_secret
         });
     });
-    Accounts.validateNewUser(function (user) {
+    Accounts.validateNewUser(function(user) {
         if (Meteor.settings.private.restrict_domain) {
             if (user.services.google.email.indexOf(Meteor.settings.private.restrict_domain) != 1) {
                 return true;
@@ -131,14 +147,14 @@ if (Meteor.isServer) {
             throw new Meteor.Error(403, "sorry,your account is not allowed");
         }
     });
-    
-    Picker.route('/get/token/', function (params, req, res, next) {
+
+    Picker.route('/get/token/', function(params, req, res, next) {
         var data = '';
         req.on('data', (chunk) => {
             data += chunk;
         });
 
-        req.on('end', Meteor.bindEnvironment(function (error, body) {
+        req.on('end', Meteor.bindEnvironment(function(error, body) {
             if (req.method === 'POST') {
                 var key = queryString.parse(data).key;
                 res.writeHead(200);
@@ -151,13 +167,13 @@ if (Meteor.isServer) {
             }
         }));
     });
-    Picker.route('/post/log/', function (params, req, res, next) {
+    Picker.route('/post/log/', function(params, req, res, next) {
         var data = '';
         req.on('data', (chunk) => {
             data += chunk;
         });
 
-        req.on('end', Meteor.bindEnvironment(function (error, body) {
+        req.on('end', Meteor.bindEnvironment(function(error, body) {
             if (req.method === 'POST') {
                 var result = queryString.parse(data).result;
                 var token = queryString.parse(data).token;
@@ -170,7 +186,7 @@ if (Meteor.isServer) {
                 console.log(json);
                 Logs.insert({
                     date: new Date(),
-                    key:json.key,
+                    key: json.key,
                     info_type: json.info_type,
                     category: json.category,
                     name: json.name,
@@ -188,7 +204,7 @@ if (Meteor.isServer) {
             }
         }));
     });
-    Picker.route('/get/log/summary/', function (params, req, res, next) {
+    Picker.route('/get/log/summary/', function(params, req, res, next) {
         var download =
             Meteor.bindEnvironment(() => {
                 var log = Logs.find({}, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
@@ -216,7 +232,7 @@ if (Meteor.isServer) {
                 textdata += "\n\n\n★エラー";
                 for (var l of loglist.filter(a => a.info_type == 'Abend')) {
                     textdata += "\n" + l.name + "\n=> " + l.description;
-                }                
+                }
                 //全体
                 textdata += "\n\n\n★全体の状況";
 
@@ -224,7 +240,7 @@ if (Meteor.isServer) {
                     textdata += "\n" + l.name + "\t" + l.info_type;
                 }
 
-                fs.writeFile(Meteor.rootPath + '\\temp\\writetest.txt', textdata, function (err) {
+                fs.writeFile(Meteor.rootPath + '\\temp\\writetest.txt', textdata, function(err) {
                     if (err) { console.log('writefile happens error :' + err); }
                     fs.readFile(Meteor.rootPath + '\\temp\\writetest.txt', (err, data) => {
                         if (err) { console.log('readfile happens error :' + err); }
