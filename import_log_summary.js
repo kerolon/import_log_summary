@@ -11,15 +11,15 @@ function getDate(dt, addDays) {
 if (Meteor.isClient) {
     var publicSetting = Meteor.settings.public;
     Template.title.helpers({
-        title:function(){
+        title: function () {
             return publicSetting.app_title;
         }
     });
     Template.tab.helpers({
-        tab1_name:function(){
+        tab1_name: function () {
             return publicSetting.tab1_title;
         },
-        tab2_name:function(){
+        tab2_name: function () {
             return publicSetting.tab2_title;
         }
     });
@@ -47,13 +47,13 @@ if (Meteor.isClient) {
         }
     });
     Template.onelog_header.helpers({
-        date:function(){
+        date: function () {
             return publicSetting.date_head;
         },
-        info_type:function(){
+        info_type: function () {
             return publicSetting.infoType_head;
         },
-        description:function(){
+        description: function () {
             return publicSetting.description_head;
         }
     });
@@ -256,7 +256,8 @@ if (Meteor.isServer) {
     Picker.route('/get/log/summary/', function (params, req, res, next) {
         var download =
             Meteor.bindEnvironment(() => {
-                var log = Logs.find({}, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
+                var tdate = getDate(new Date(), 1);
+                var log = Logs.find({ date: { $gte: tdate } }, { sort: { date: -1 } }).fetch().filter((x, i, arr) => {
                     return arr.indexOf(arr.find((y, j, arr2) => {
                         return y.name === x.name && y.sub_name === x.sub_name;
                     })) == i;
