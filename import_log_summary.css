@@ -35,10 +35,9 @@ button.active{
     border-left: solid teal 5px;
 }
 
-.filter{
-    position: absolute;
+.pad-left{
+    padding-left :10px;
 }
-
 .pos-right{
     float:right;
 }

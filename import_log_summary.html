@@ -26,11 +26,17 @@
         <div class="tab-content">
             <div class="list tab-pane fade in active" id="tab1">
                 <div class="container">
-                    <div class="filter">
+                    <div class="filter pos-left">
                         <select name="ddlInfoTypeFilter" id="ddlInfoTypeFilter">
                             <option label="--filter--" value=""></option>
                             {{#each filters}}{{>filter}}{{/each}}
                         </select>
+                    </div>
+                    <div class="order pos-left pad-left">
+                        <select name="ddlOrder" id="ddlOrder">
+                            <option label={{date}} value="0"></option>
+                            <option label={{sub_name}} value="1"></option>
+                         </select>
                     </div>
                     <div class="export pos-right">
                         <button type="button" id="btn-export" class="btn btn-default" aria-label="Center Align" title="download">
