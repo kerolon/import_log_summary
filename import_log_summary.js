@@ -64,6 +64,9 @@ if (Meteor.isClient) {
         sub_name: function () {
             return publicSetting.subName_head;
         },
+        name: function(){
+            return publicSetting.name_head;
+        },
         logs: function () {
             //1日前のまで取得
             var tdate = getDate(new Date(), 1);
