@@ -87,6 +87,16 @@ if (Meteor.isClient) {
                     }
                 })
             }
+            else if (Session.get("selected_order") === '2') {
+                log.sort((a, b) => {
+                    if (a.name.toString() > b.name.toString()) {
+                        return 1;
+                    }
+                    else {
+                        return -1
+                    }
+                })
+            }
             return log.map((l) => {
                 return {
                     log_id: l._id,
