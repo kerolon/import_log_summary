@@ -92,7 +92,7 @@ if (Meteor.isClient) {
             }
             else if (Session.get("selected_order") === '2') {
                 log.sort((a, b) => {
-                    if (a.name.toString() > b.name.toString()) {
+                    if (katakanaToHiragana(a.name.toString()) > katakanaToHiragana(b.name.toString())){
                         return 1;
                     }
                     else {
@@ -328,5 +328,17 @@ if (Meteor.isServer) {
         } else {
             download();
         }
+    });
+}
+
+// https://gist.github.com/kawanet/5553478
+/** カタカナをひらがなに変換する関数
+ * @param {String} src - カタカナ
+ * @returns {String} - ひらがな
+ */
+function katakanaToHiragana(src) {
+    return src.replace(/[\u30a1-\u30f6]/g, function(match) {
+        var chr = match.charCodeAt(0) - 0x60;
+        return String.fromCharCode(chr);
     });
 }
