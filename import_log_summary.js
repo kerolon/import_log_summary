@@ -92,7 +92,8 @@ if (Meteor.isClient) {
             }
             else if (Session.get("selected_order") === '2') {
                 log.sort((a, b) => {
-                    if (katakanaToHiragana(a.name.toString()) > katakanaToHiragana(b.name.toString())){
+                    if (katakanaToHiragana(a.name.toString().toLowerCase())
+                     > katakanaToHiragana(b.name.toString().toLowerCase())){
                         return 1;
                     }
                     else {
