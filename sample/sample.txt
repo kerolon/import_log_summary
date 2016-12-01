@@ -3,3 +3,5 @@ curl -d token=hoge -d "result={\"info_type\":\"error\",\"category\":\"import\",\
 { log_id: 0, date: new Date().toFormat('YYYY/MM/DD HH24:MI:SS'), info_type: 'complete1', category: 'import', name: 'someone', option: 'somewhere', description: 'somthing happened' },
 { log_id: 1, date: new Date().toFormat('YYYY/MM/DD HH24:MI:SS'), info_type: 'complete2', category: 'import', name: 'someone', option: 'somewhere', description: 'somthing happened' },
 { log_id: 2, date: new Date().toFormat('YYYY/MM/DD HH24:MI:SS'), info_type: 'complete3', category: 'import', name: 'someone', option: 'somewhere', description: 'somthing happened' },
+
+curl -d token=hoge -d "result={\"names\":["test1","test2"]}" http://localhost:3000/post/master

@@ -9,7 +9,7 @@
         <div>
             {{>title}}
         </div>
-        {{/if}}
+        {{/if}}        
         <div id="login" class="in-logout pos-right">
             {{> loginButtons}}
         </div>
@@ -69,7 +69,15 @@
                     </div>
                 </div>
             </div>
-            <div class="report tab-pane fade" id="tab2"></div>
+            <div class="report tab-pane fade" id="tab2">
+                <div class="table-responsive">
+                    <table id="main" class="table table-striped table-borderd table-hover">
+                        <tbody>
+                            {{#each masters}} {{> master}} {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     {{/if}}
@@ -128,6 +136,13 @@
         </td>
         <td>
             <button class="chat-start btn btn-default" log-id={{log_id}}>chat</button>
+        </td>
+    </tr>
+</template>
+<template name="master">
+    <tr class="master">
+        <td>
+            {{name}}
         </td>
     </tr>
 </template>

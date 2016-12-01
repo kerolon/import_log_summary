@@ -1,5 +1,6 @@
 var Logs = new Mongo.Collection("logs");
 var Comments = new Mongo.Collection("comments");
+var Masters = new Mongo.Collection("masters");
 
 function getDate(dt, addDays) {
     var baseSec = dt.getTime();
@@ -64,7 +65,7 @@ if (Meteor.isClient) {
         sub_name: function () {
             return publicSetting.subName_head;
         },
-        name: function(){
+        name: function () {
             return publicSetting.name_head;
         },
         logs: function () {
@@ -93,7 +94,7 @@ if (Meteor.isClient) {
             else if (Session.get("selected_order") === '2') {
                 log.sort((a, b) => {
                     if (katakanaToHiragana(a.name.toString().toLowerCase())
-                     > katakanaToHiragana(b.name.toString().toLowerCase())){
+                        > katakanaToHiragana(b.name.toString().toLowerCase())) {
                         return 1;
                     }
                     else {
@@ -135,6 +136,9 @@ if (Meteor.isClient) {
                     val: l.info_type,
                 };
             });
+        },
+        masters: function () {
+            return Masters.find();            
         },
     });
 
@@ -330,6 +334,41 @@ if (Meteor.isServer) {
             download();
         }
     });
+    Picker.route('/post/master/', function (params, req, res, next) {
+        var data = '';
+        req.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        req.on('end', Meteor.bindEnvironment(function (error, body) {
+            if (req.method === 'POST') {
+                var result = queryString.parse(data).result;
+                var token = queryString.parse(data).token;
+                if (token !== CryptoJS.SHA256(Meteor.settings.private.apipass).toString()) {
+                    res.writeHead(403);
+                    res.end();
+                    return;
+                }
+                var json = JSON.parse(result);
+                console.log(json);
+                Masters.remove({});
+                for (var n in json.names) {
+                    Masters.insert({
+                        name: json.names[n],
+                    });
+                }
+
+                res.writeHead(202);
+                res.end();
+                return;
+            }
+            else {
+                res.writeHead(405);
+                res.end();
+                return;
+            }
+        }));
+    });
 }
 
 // https://gist.github.com/kawanet/5553478
@@ -338,7 +377,7 @@ if (Meteor.isServer) {
  * @returns {String} - ひらがな
  */
 function katakanaToHiragana(src) {
-    return src.replace(/[\u30a1-\u30f6]/g, function(match) {
+    return src.replace(/[\u30a1-\u30f6]/g, function (match) {
         var chr = match.charCodeAt(0) - 0x60;
         return String.fromCharCode(chr);
     });
